@@ -11,5 +11,6 @@ func NewHandler() *BaseHandler {
 }
 
 func (h *BaseHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    w.Write([]byte("OK"))
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Success"))
 }
