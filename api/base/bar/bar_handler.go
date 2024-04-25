@@ -65,6 +65,12 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+    if bar.Password != found.Password {
+        w.WriteHeader(http.StatusUnauthorized)
+        w.Write(nil)
+        return
+    }
+
     tokenized := &model.TokenizedBar{
         Id: found.Id,
         Token: found.Token,
