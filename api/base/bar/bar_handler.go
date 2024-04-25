@@ -2,6 +2,7 @@ package bar
 
 import (
     "fmt"
+    "math/rand"
     "net/http"
     "encoding/json"
     "slijterij/db"
@@ -30,10 +31,10 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
 
     tokenSlice := make([]byte, tokenMaxLength)
     for i := range tokenSlice {
-        tokenSlice[i] = letters[rand.Intn(len(tokenLetters))]
+        tokenSlice[i] = tokenLetters[rand.Intn(len(tokenLetters))]
     }
 
-    entity := &model.BarEntity{bar.Id, bar.Password, token}
+    entity := &model.BarEntity{bar.Id, bar.Password, string(tokenSlice)}
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
