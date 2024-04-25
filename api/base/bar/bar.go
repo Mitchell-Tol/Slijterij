@@ -1,19 +1,19 @@
-package rooms
+package bar
 
 import (
     "net/http"
 )
 
-func NewHandler(url string) *RoomsHandler {
-    return &RoomsHandler{url}
+func NewHandler(url string) *BarHandler {
+    return &BarHandler{url}
 }
 
-func (h *RoomsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case http.MethodPost:
         switch h.URL {
         case REGULAR:
-            h.CreateRoom(w, r)
+            h.CreateBar(w, r)
 
         case LOGIN:
             h.HandleLogin(w, r)

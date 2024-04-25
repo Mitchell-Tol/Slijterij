@@ -1,11 +1,11 @@
-package rooms
+package bar
 
-type Room struct {
+type Bar struct {
     Id string `json:"id"`
     Password string `json:"password"`
 }
 
-type TokenizedRoom struct {
+type TokenizedBar struct {
     Id string `json:"id"`
     Token string `json:"token"`
 }

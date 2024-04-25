@@ -5,7 +5,7 @@ import (
     "net/http"
     "slijterij/api/base"
     "slijterij/api/base/drinks"
-    "slijterij/api/base/rooms"
+    "slijterij/api/base/bar"
 )
 
 func main() {
@@ -14,8 +14,8 @@ func main() {
     mux := http.NewServeMux()
     mux.Handle("/", base.NewHandler())
     mux.Handle("/drinks", drinks.NewHandler())
-    mux.Handle("/rooms", rooms.NewHandler(rooms.REGULAR))
-    mux.Handle("/rooms/login", rooms.NewHandler(rooms.LOGIN))
+    mux.Handle("/bar", bar.NewHandler(bar.REGULAR))
+    mux.Handle("/bar/login", bar.NewHandler(bar.LOGIN))
 
     fmt.Println("Running...")
     http.ListenAndServe(":8080", mux)

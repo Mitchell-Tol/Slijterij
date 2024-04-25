@@ -1,4 +1,4 @@
-package rooms
+package bar
 
 import (
     "fmt"
@@ -9,13 +9,13 @@ import (
 const REGULAR = ""
 const LOGIN = "login"
 
-type RoomsHandler struct {
+type BarHandler struct {
     URL string
 }
 
-func (h *RoomsHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
-    room := &Room{}
-    reqJsonErr := json.NewDecoder(r.Body).Decode(room)
+func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
+    bar := &Bar{}
+    reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
         SendBadRequest(w)
@@ -23,14 +23,14 @@ func (h *RoomsHandler) CreateRoom(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-    // TODO: Store room with generated token
+    // TODO: Store bar with generated token
 
     w.WriteHeader(http.StatusOK)
 }
 
-func (h *RoomsHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-    room := &Room{}
-    reqJsonErr := json.NewDecoder(r.Body).Decode(room)
+func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
+    bar := &Bar{}
+    reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
         SendBadRequest(w)
@@ -38,8 +38,8 @@ func (h *RoomsHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tokenized := &TokenizedRoom{
-        Id: room.Id,
+    tokenized := &TokenizedBar{
+        Id: bar.Id,
         Token: "ThisIsAGeneratedToken", // TODO: Retrieve token
     }
     jsonResponse, resJsonErr := json.Marshal(tokenized)
