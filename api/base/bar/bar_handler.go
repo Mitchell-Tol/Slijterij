@@ -2,6 +2,7 @@ package bar
 
 import (
     "fmt"
+    "math/rand"
     "net/http"
     "encoding/json"
     "slijterij/db"
@@ -10,6 +11,8 @@ import (
 
 const REGULAR = ""
 const LOGIN = "login"
+const tokenLetters = "abcdefghijklmnopqrstuvwxyz"
+const tokenMaxLength = 16
 
 type BarHandler struct {
     store   *db.DataStore
@@ -26,9 +29,22 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-    // TODO: Store bar with generated token
+    tokenSlice := make([]byte, tokenMaxLength)
+    for i := range tokenSlice {
+        tokenSlice[i] = tokenLetters[rand.Intn(len(tokenLetters))]
+    }
+
+    entity := &model.BarEntity{bar.Id, bar.Password, string(tokenSlice)}
+    rowId, sqlErr := h.store.CreateBar(entity)
+    if sqlErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(nil)
+        fmt.Printf("ERROR:\t%s\n", sqlErr)
+        return
+    }
 
     w.WriteHeader(http.StatusOK)
+    w.Write([]byte(fmt.Sprintf("Row %d created", rowId)))
 }
 
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {

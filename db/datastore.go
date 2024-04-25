@@ -50,3 +50,17 @@ func (s *DataStore) RetrieveBar(id string) (*model.BarEntity, error) {
     return bar, nil
 }
 
+func (s *DataStore) CreateBar(entity *model.BarEntity) (int64, error) {
+    result, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?)", entity.Id, entity.Password, entity.Token)
+    if queryErr != nil {
+        return -1, fmt.Errorf("CreateBar: %v", queryErr)
+    }
+
+    id, idErr := result.LastInsertId()
+    if idErr != nil {
+        return -1, fmt.Errorf("CreateBar: %v", idErr)
+    }
+
+    return id, nil
+}
+
