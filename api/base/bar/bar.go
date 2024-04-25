@@ -2,10 +2,11 @@ package bar
 
 import (
     "net/http"
+    "slijterij/db"
 )
 
-func NewHandler(url string) *BarHandler {
-    return &BarHandler{url}
+func NewHandler(s *db.DataStore, url string) *BarHandler {
+    return &BarHandler{s, url}
 }
 
 func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {

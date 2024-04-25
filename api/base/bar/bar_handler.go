@@ -4,17 +4,20 @@ import (
     "fmt"
     "net/http"
     "encoding/json"
+    "slijterij/db"
+    "slijterij/api/base/bar/model"
 )
 
 const REGULAR = ""
 const LOGIN = "login"
 
 type BarHandler struct {
-    URL string
+    store   *db.DataStore
+    URL     string
 }
 
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
-    bar := &Bar{}
+    bar := &model.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -29,7 +32,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-    bar := &Bar{}
+    bar := &model.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -38,9 +41,17 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tokenized := &TokenizedBar{
-        Id: bar.Id,
-        Token: "ThisIsAGeneratedToken", // TODO: Retrieve token
+    found, sqlErr := h.store.RetrieveBar(bar.Id)
+    if sqlErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(nil)
+        fmt.Printf("Error:\t%s\n", sqlErr)
+        return
+    }
+
+    tokenized := &model.TokenizedBar{
+        Id: found.Id,
+        Token: found.Token,
     }
     jsonResponse, resJsonErr := json.Marshal(tokenized)
 
