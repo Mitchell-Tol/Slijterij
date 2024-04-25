@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting API Service")
+    fmt.Println("Starting API Service")
 
     mux := http.NewServeMux()
     mux.Handle("/", base.NewHandler())
