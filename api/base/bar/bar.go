@@ -21,3 +21,4 @@ func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         }
     }
 }
+

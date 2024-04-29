@@ -7,6 +7,7 @@ import (
     "encoding/json"
     "slijterij/db"
     "slijterij/api/base/bar/model"
+    "slijterij/api/generic"
 )
 
 const REGULAR = ""
@@ -15,8 +16,8 @@ const tokenLetters = "abcdefghijklmnopqrstuvwxyz"
 const tokenMaxLength = 16
 
 type BarHandler struct {
-    store   *db.DataStore
-    URL     string
+    store *db.DataStore
+    URL string
 }
 
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +39,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
-        w.Write(nil)
+        w.Write(generic.JSONError("API <--> Database communication error"))
         fmt.Printf("ERROR:\t%s\n", sqlErr)
         return
     }
@@ -60,14 +61,14 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
     found, sqlErr := h.store.RetrieveBar(bar.Id)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
-        w.Write(nil)
+        w.Write(generic.JSONError("API <--> Database communication error"))
         fmt.Printf("Error:\t%s\n", sqlErr)
         return
     }
 
     if bar.Password != found.Password {
         w.WriteHeader(http.StatusUnauthorized)
-        w.Write(nil)
+        w.Write(generic.JSONError("Incorrect password"))
         return
     }
 
@@ -89,5 +90,6 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 func SendBadRequest(w http.ResponseWriter) {
     w.WriteHeader(http.StatusBadRequest)
-    w.Write(nil)
+    w.Write(generic.JSONError("Bad Request"))
 }
+
