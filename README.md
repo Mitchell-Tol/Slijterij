@@ -43,7 +43,7 @@ set DBPASS=password
 
 If you have not updated the username after installation, this will be 'root'. The password will be the same as you entered as the one you entered earlier in the SQL query.
 
-This step has to be repeated every time you reset your kernel, I'm going to find a way to fix this, but not yet.
+This step can be skipped by inserting a certain file into the project, ask me for more info about "env.go".
 
 ## The Fun Part
 Once the API runs by using `go run .`, it works. The API will be running on **localhost:8080** and will accept HTTP requests. Note: If it doesn't actually work, send me some screens of the errors you get, I might still need to do some CORS stuff. 
