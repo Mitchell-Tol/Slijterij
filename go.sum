@@ -1,4 +1,6 @@
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
+github.com/go-mysql/errors v0.0.0-20180603193453-03314bea68e0 h1:meiLwrW6ukHHehydhoDxVHdQKQe7TFgEpH0A0hHBAWs=
+github.com/go-mysql/errors v0.0.0-20180603193453-03314bea68e0/go.mod h1:ZH8V0509n2OSZLMYTMHzcy4hqUB+rG8ghK1zsP4i5gE=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=

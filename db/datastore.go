@@ -7,6 +7,7 @@ import (
     "log"
     "github.com/go-sql-driver/mysql"
     "slijterij/api/base/bar/model"
+    "slijterij/api/base/drinks/drinksmodel"
 )
 
 var db *sql.DB
@@ -59,6 +60,20 @@ func (s *DataStore) CreateBar(entity *model.BarEntity) (int64, error) {
     id, idErr := result.LastInsertId()
     if idErr != nil {
         return -1, fmt.Errorf("CreateBar: %v", idErr)
+    }
+
+    return id, nil
+}
+
+func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (int64, error) {
+    result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?)", entity.Id, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier)
+    if queryErr != nil {
+        return -1, queryErr
+    }
+
+    id, idErr := result.LastInsertId()
+    if idErr != nil {
+        return -1, fmt.Errorf("CreateDrink: %v", idErr)
     }
 
     return id, nil

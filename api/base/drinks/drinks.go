@@ -2,12 +2,11 @@ package drinks
 
 import (
     "net/http"
+    "slijterij/db"
 )
 
-type DrinksHandler struct{}
-
-func NewHandler() *DrinksHandler {
-    return &DrinksHandler{}
+func NewHandler(s *db.DataStore) *DrinksHandler {
+    return &DrinksHandler{s}
 }
 
 func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +15,7 @@ func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         w.Write([]byte("Retrieving drink list"))
 
     case http.MethodPost:
-        w.Write([]byte("Created new type of drink"))
+        h.CreateDrink(w, r)
 
     case http.MethodPut:
         w.Write([]byte("Updated drink"))
@@ -25,3 +24,4 @@ func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         w.Write([]byte("Deleted drink"))
     }
 }
+
