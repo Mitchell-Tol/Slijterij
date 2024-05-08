@@ -160,9 +160,13 @@ Input: `{ "id": string, "name": string, "bar_id": string, "start_price": float, 
 
 Output: 
 * Status Code: 201
+    * `{ "id": string, "name": string, "bar_id", string, "start_price": float, "current_price": float, "multiplier": float }`
 * Status Code: 400
+    * `{ "message": string }`
 * Status Code: 409
+    * `{ "message": string }`
 * Status Code: 500
+    * `{ "message": string }`
 
 Status: IMPLEMENTED
 
