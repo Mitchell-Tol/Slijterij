@@ -87,8 +87,9 @@ Output:
 * Status Code: 200
     * "Row X created" where X is the Row's ID (not the bar's ID)
 * Status Code: 400
-    * `null`
-    * Make better JSON
+    * `{ "message": string }`
+* Status Code: 500
+    * `{ "message": string }`
 
 Status: IMPLEMENTED
 
@@ -100,14 +101,11 @@ Output:
 * Status Code: 200
     * `{ "id": string, "password": string }`
 * Status Code: 400
-    * `null`
-    * Make better JSON
+    * `{ "message": string }`
 * Status Code: 404
-    * `null`
-    * When no bar with the given ID has been found
+    * `{ "message": string }`
 * Status Code: 409
-    * `null`
-    * When the password is too long
+    * `{ "message": string }`
 
 Status: TO BE IMPLEMENTED
 
@@ -118,11 +116,9 @@ Output:
 * Status Code: 200
     * `null`
 * Status Code: 400
-    * `null`
-    * Make better JSON
+    * `{ "message": string }`
 * Status Code: 404
-    * `null`
-    * When no bar with the given ID has been found
+    * `{ "message": string }`
 
 Status: TO BE IMPLEMENTED
 
@@ -138,14 +134,11 @@ Output:
 * Status Code: 200
     * `{ "id": string, "token": string }`
 * Status Code: 400
-    * `null`
-    * Make better JSON
+    * `{ "message": string }`
 * Status Code :401
-    * `null`
-    * Password is incorrect
+    * `{ "message": string }`
 * Status Code: 500
-    * `null`
-    * Something went wrong when retrieving database items
+    * `{ "message": string }`
 
 Status: IMPLEMENTED
 
