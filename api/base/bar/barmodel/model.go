@@ -1,4 +1,4 @@
-package model
+package barmodel
 
 type Bar struct {
     Id string `json:"id"`

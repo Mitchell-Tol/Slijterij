@@ -6,7 +6,7 @@ import (
     "net/http"
     "encoding/json"
     "slijterij/db"
-    "slijterij/api/base/bar/model"
+    "slijterij/api/base/bar/barmodel"
     "slijterij/api/generic"
 )
 
@@ -21,7 +21,7 @@ type BarHandler struct {
 }
 
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
-    bar := &model.Bar{}
+    bar := &barmodel.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -35,7 +35,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         tokenSlice[i] = tokenLetters[rand.Intn(len(tokenLetters))]
     }
 
-    entity := &model.BarEntity{bar.Id, bar.Password, string(tokenSlice)}
+    entity := &barmodel.BarEntity{bar.Id, bar.Password, string(tokenSlice)}
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
@@ -49,7 +49,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-    bar := &model.Bar{}
+    bar := &barmodel.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -72,7 +72,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    tokenized := &model.TokenizedBar{
+    tokenized := &barmodel.TokenizedBar{
         Id: found.Id,
         Token: found.Token,
     }
