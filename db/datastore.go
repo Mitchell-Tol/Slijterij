@@ -6,7 +6,7 @@ import (
     "os"
     "log"
     "github.com/go-sql-driver/mysql"
-    "slijterij/api/base/bar/model"
+    "slijterij/api/base/bar/barmodel"
     "slijterij/api/base/drinks/drinksmodel"
 )
 
@@ -38,8 +38,8 @@ func NewStore() *DataStore {
     return &DataStore{}
 }
 
-func (s *DataStore) RetrieveBar(id string) (*model.BarEntity, error) {
-    bar := &model.BarEntity{}
+func (s *DataStore) RetrieveBar(id string) (*barmodel.BarEntity, error) {
+    bar := &barmodel.BarEntity{}
 
     row := db.QueryRow("SELECT * FROM bar WHERE id = ?", id)
     if err := row.Scan(&bar.Id, &bar.Password, &bar.Token); err != nil {
@@ -51,7 +51,7 @@ func (s *DataStore) RetrieveBar(id string) (*model.BarEntity, error) {
     return bar, nil
 }
 
-func (s *DataStore) CreateBar(entity *model.BarEntity) (int64, error) {
+func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
     result, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?)", entity.Id, entity.Password, entity.Token)
     if queryErr != nil {
         return -1, fmt.Errorf("CreateBar: %v", queryErr)
