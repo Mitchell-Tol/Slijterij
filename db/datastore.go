@@ -65,6 +65,16 @@ func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
     return id, nil
 }
 
+func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
+    var drinks []drinksmodel.DrinkEntity
+
+    rows, queryErr := db.Query("SELECT * FROM product WHERE bar_id = ?", barId)
+    if err != nil {
+        return nil, fmt.Errorf("GetAllDrinks: %v", queryErr)
+    }
+    defer rows.Close()
+}
+
 func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (int64, error) {
     result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?)", entity.Id, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier)
     if queryErr != nil {
@@ -78,4 +88,5 @@ func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (int64, error) 
 
     return id, nil
 }
+
 
