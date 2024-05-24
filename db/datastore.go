@@ -77,7 +77,8 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
 
     for rows.Next() {
         var drink drinksmodel.DrinkEntity
-        if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.Multiplier); convertErr != nil {
+        if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.Multiplier, &drink.Tag); convertErr != nil {
+			fmt.Errorf("GetAllDrinks %s: %v", barId, convertErr)
             continue
         }
         drinks = append(drinks, drink)

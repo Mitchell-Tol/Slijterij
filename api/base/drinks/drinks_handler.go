@@ -26,12 +26,14 @@ func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Internal server error"))
+		return
     }
 
     jsonRes, jsonErr := json.Marshal(drinks)
     if jsonErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Something went wrong when mapping the response to valid JSON"))
+		return
     }
 
     w.WriteHeader(http.StatusOK)
