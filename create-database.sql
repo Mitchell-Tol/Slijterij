@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS `drankbeurs`;
 USE `drankbeurs`;
 
 CREATE TABLE `bar` (
-  `id` varchar(16) NOT NULL,
+  `id` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `token` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
@@ -25,6 +25,7 @@ CREATE TABLE `product` (
   `start_price` decimal(10,2) NOT NULL,
   `current_price` decimal(10,2) NOT NULL,
   `multiplier` decimal(10,5) NOT NULL,
+  `tag` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `room_idx` (`bar_id`),

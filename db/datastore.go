@@ -8,6 +8,7 @@ import (
     "github.com/go-sql-driver/mysql"
     "slijterij/api/base/bar/barmodel"
     "slijterij/api/base/drinks/drinksmodel"
+	"github.com/google/uuid"
 )
 
 var db *sql.DB
@@ -88,18 +89,26 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
     return drinks, nil
 }
 
-func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (int64, error) {
-    result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?)", entity.Id, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier)
+func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (string, error) {
+	generatedId := uuid.New().String()
+    result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?, ?)", generatedId, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag)
     if queryErr != nil {
-        return -1, queryErr
+        return "", queryErr
     }
 
-    id, idErr := result.LastInsertId()
+    _, idErr := result.LastInsertId()
     if idErr != nil {
-        return -1, fmt.Errorf("CreateDrink: %v", idErr)
+        return "", fmt.Errorf("CreateDrink: %v", idErr)
     }
 
-    return id, nil
+    return generatedId, nil
 }
 
+func (s *DataStore) UpdateDrink(entity *drinksmodel.DrinkEntity) (*drinksmodel.DrinkEntity, error) {
+	_, queryErr := db.Exec("UPDATE product SET name = ?, start_price = ?, current_price = ?, multiplier = ?, tag = ? WHERE id = ?", entity.Name, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.Id)
+	if queryErr != nil {
+		return nil, queryErr
+	}
 
+	return entity, nil
+}
