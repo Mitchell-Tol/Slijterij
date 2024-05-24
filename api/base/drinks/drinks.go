@@ -12,7 +12,7 @@ func NewHandler(s *db.DataStore) *DrinksHandler {
 func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case http.MethodGet:
-        w.Write([]byte("Retrieving drink list"))
+        h.GetAllDrinks(w, r)
 
     case http.MethodPost:
         h.CreateDrink(w, r)

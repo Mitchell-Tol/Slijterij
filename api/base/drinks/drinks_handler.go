@@ -14,6 +14,30 @@ type DrinksHandler struct {
     store *db.DataStore
 }
 
+func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
+    barIdParams := r.URL.Query()["barId"]
+    if len(barIdParams) == 0 {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write(generic.JSONError("Please provide a valid barId as a query parameter"))
+        return
+    }
+
+    drinks, sqlErr := h.store.GetAllDrinks(barIdParams[0])
+    if sqlErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("Internal server error"))
+    }
+
+    jsonRes, jsonErr := json.Marshal(drinks)
+    if jsonErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("Something went wrong when mapping the response to valid JSON"))
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write(jsonRes)
+}
+
 func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
     drink := &drinksmodel.DrinkEntity{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(drink)
