@@ -19,7 +19,7 @@ CREATE TABLE `device` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `product` (
-  `id` varchar(16) NOT NULL,
+  `id` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
   `bar_id` varchar(45) NOT NULL,
   `start_price` decimal(10,2) NOT NULL,

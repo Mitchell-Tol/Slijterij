@@ -1,6 +1,6 @@
 module slijterij
 
-go 1.23
+go 1.22
 
 require (
 	github.com/go-mysql/errors v0.0.0-20180603193453-03314bea68e0
