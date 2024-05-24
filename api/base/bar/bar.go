@@ -11,6 +11,9 @@ func NewHandler(s *db.DataStore, url string) *BarHandler {
 
 func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
+    case http.MethodGet:
+        h.GetAllBars(w, r)
+        
     case http.MethodPost:
         switch h.URL {
         case REGULAR:

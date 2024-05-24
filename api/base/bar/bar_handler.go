@@ -2,22 +2,45 @@ package bar
 
 import (
     "fmt"
-    "math/rand"
     "net/http"
     "encoding/json"
     "slijterij/db"
     "slijterij/api/base/bar/barmodel"
     "slijterij/api/generic"
+	"github.com/google/uuid"
 )
 
 const REGULAR = ""
 const LOGIN = "login"
-const tokenLetters = "abcdefghijklmnopqrstuvwxyz"
-const tokenMaxLength = 16
 
 type BarHandler struct {
     store *db.DataStore
     URL string
+}
+
+func (h *BarHandler) GetAllBars(w http.ResponseWriter, r *http.Request) {
+    bars, retrieveErr := h.store.GetAllBars()
+    if retrieveErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("Internal server error"))
+        return
+    }
+
+    var tokenized []barmodel.TokenizedBar
+    for i := 0; i < len(bars); i++ {
+        mapped := barmodel.MapEntityToTokenized(bars[i])
+        tokenized = append(tokenized, mapped)
+    }
+
+    jsonResponse, jsonErr := json.Marshal(tokenized)
+    if jsonErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("An error occurred while mapping to JSON"))
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write(jsonResponse)
 }
 
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
@@ -30,12 +53,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-    tokenSlice := make([]byte, tokenMaxLength)
-    for i := range tokenSlice {
-        tokenSlice[i] = tokenLetters[rand.Intn(len(tokenLetters))]
-    }
-
-    entity := &barmodel.BarEntity{bar.Id, bar.Password, string(tokenSlice)}
+    entity := &barmodel.BarEntity{bar.Id, bar.Password, uuid.New().String()}
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)

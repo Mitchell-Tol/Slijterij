@@ -4,7 +4,7 @@ USE `drankbeurs`;
 CREATE TABLE `bar` (
   `id` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
-  `token` varchar(16) NOT NULL,
+  `token` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `token_UNIQUE` (`token`)
