@@ -7,5 +7,6 @@ type DrinkEntity struct{
     StartPrice float32 `json:"start_price"`
     CurrentPrice float32 `json:"current_price"`
     Multiplier float32 `json:"multiplier"`
+	Tag string `json:"tag"`
 }
 

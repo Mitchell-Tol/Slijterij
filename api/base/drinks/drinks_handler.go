@@ -26,12 +26,14 @@ func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Internal server error"))
+		return
     }
 
     jsonRes, jsonErr := json.Marshal(drinks)
     if jsonErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Something went wrong when mapping the response to valid JSON"))
+		return
     }
 
     w.WriteHeader(http.StatusOK)
@@ -46,7 +48,8 @@ func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
         w.Write(generic.JSONError("Bad Request: Invalid JSON"))
     }
 
-    _, sqlErr := h.store.CreateDrink(drink)
+    id, sqlErr := h.store.CreateDrink(drink)
+	drink.Id = id
     if sqlErr != nil {
         code := errors.MySQLErrorCode(sqlErr)
         if code == 1062 {
@@ -70,3 +73,29 @@ func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
     w.Write(jsonResponse)
 }
 
+func (h *DrinksHandler) UpdateDrink(w http.ResponseWriter, r *http.Request) {
+	drink := &drinksmodel.DrinkEntity{}
+    reqJsonErr := json.NewDecoder(r.Body).Decode(drink)
+    if reqJsonErr != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write(generic.JSONError("Bad Request: Invalid JSON"))
+		return
+    }
+
+	result, sqlErr := h.store.UpdateDrink(drink)
+	if sqlErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Internal server error"))
+		return
+	}
+
+	resJson, jsonErr := json.Marshal(result)
+	if jsonErr!= nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Error while converting drink to JSON"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(resJson)
+}
