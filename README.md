@@ -148,6 +148,19 @@ Status: IMPLEMENTED
 ```
 This endpoint is for retrieving and managing drinks.
 
+#### GET
+Query parameter: `barId`
+
+Output:
+* Status Code: 200
+    * `[ { "id": string, "name": string, "bar_id": string, "start_price": float, "current_price": float, "multiplier": float } ]`
+* Status Code: 400
+    * `{ "message": string }`
+* Status Code: 500
+    * `{ "message": string }`
+
+Status: IMPLEMENTED
+
 #### POST
 Input: `{ "id": string, "name": string, "bar_id": string, "start_price": float, "current_price": float, "multiplier": float }`
 
