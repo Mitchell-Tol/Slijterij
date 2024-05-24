@@ -21,7 +21,6 @@ func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.UpdateDrink(w, r)
 
     case http.MethodDelete:
-        w.Write([]byte("Deleted drink"))
+        h.DeleteDrink(w, r)
     }
 }
-

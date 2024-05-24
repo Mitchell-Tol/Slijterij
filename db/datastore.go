@@ -113,3 +113,8 @@ func (s *DataStore) UpdateDrink(entity *drinksmodel.DrinkEntity) (*drinksmodel.D
 
 	return entity, nil
 }
+
+func (s *DataStore) DeleteDrink(id string) (error) {
+	_, sqlErr := db.Exec("DELETE FROM product WHERE id = ?", id)
+	return sqlErr
+}

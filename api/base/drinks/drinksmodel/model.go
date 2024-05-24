@@ -1,6 +1,6 @@
 package drinksmodel
 
-type DrinkEntity struct{
+type DrinkEntity struct {
     Id string `json:"id"`
     Name string `json:"name"`
     BarId string `json:"bar_id"`
@@ -10,3 +10,6 @@ type DrinkEntity struct{
 	Tag string `json:"tag"`
 }
 
+type DrinkId struct {
+	Id string `json:"id"`
+}
