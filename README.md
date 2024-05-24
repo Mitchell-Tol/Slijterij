@@ -76,9 +76,11 @@ Input: None
 
 Output:
 * Status Code: 200
-    * `[{ "id": string, "password": string }, { "id": string, "password": string }]`
+    * `[{ "id": string, "token": string }, { "id": string, "token": string }]`
+* Status Code: 500
+    * `{ "message": string }`
 
-Status: TO BE IMPLEMENTED
+Status: IMPLEMENTED
 
 #### POST
 Input: `{ "id": string, "password": string }`

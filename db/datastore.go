@@ -39,6 +39,31 @@ func NewStore() *DataStore {
     return &DataStore{}
 }
 
+func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
+    var bars []barmodel.BarEntity
+
+    rows, queryErr := db.Query("SELECT * FROM bar")
+    if queryErr != nil {
+        return nil, queryErr
+    }
+
+    defer rows.Close()
+    for rows.Next() {
+        var bar barmodel.BarEntity
+        convertErr := rows.Scan(&bar.Id, &bar.Password, &bar.Token)
+        if convertErr != nil {
+            fmt.Errorf("GetAllBars %v", convertErr)
+            continue
+        }
+        bars = append(bars, bar)
+    }
+
+    if rowsErr := rows.Err(); rowsErr != nil {
+        return nil, rowsErr
+    }
+    return bars, nil
+}
+
 func (s *DataStore) RetrieveBar(id string) (*barmodel.BarEntity, error) {
     bar := &barmodel.BarEntity{}
 
