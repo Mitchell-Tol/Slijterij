@@ -7,7 +7,7 @@ The API for Slijterij is written in Go, so having Go installed on your system is
 #### MySQL
 The database is built using MySQL, which means that that needs to be installed and configured so the API can use it. 
 
-* On Linux (so also MacOS) you can install the MySQL client by using the command `sudo apt-get install mysql-client`
+* On Linux (so also MacOS) you can install the MySQL server by using the command `sudo apt-get install mysql-server`
 * Installing it on Windows can best be done using the installer you download for installing the MySQL Workbench.
 
 In order to connect to the client, on Windows you can just use the MySQL Workbench, and on Linux you can use the `sudo mysql` command.
