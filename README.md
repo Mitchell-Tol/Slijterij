@@ -188,3 +188,16 @@ Output:
     * `{ "message": string }`
 
 Status: IMPLEMENTED
+
+#### DELETE
+Input: `{ "id": string }`
+
+Output:
+* Status Code: 200
+    * `null`
+* Status Code: 400
+    * `{ "message": string }`
+* Status Code: 500
+    * `{ "message": string }`
+
+Status: IMPLEMENTED
