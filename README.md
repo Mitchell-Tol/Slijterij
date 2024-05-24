@@ -175,4 +175,3 @@ Output:
     * `{ "message": string }`
 
 Status: IMPLEMENTED
-
