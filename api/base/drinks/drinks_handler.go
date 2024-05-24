@@ -14,6 +14,12 @@ type DrinksHandler struct {
     store *db.DataStore
 }
 
+func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
+    query := r.URL.Query()
+    fmt.Println(query)
+    w.Write(nil)
+}
+
 func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
     drink := &drinksmodel.DrinkEntity{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(drink)

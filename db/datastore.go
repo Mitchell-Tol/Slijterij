@@ -69,10 +69,23 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
     var drinks []drinksmodel.DrinkEntity
 
     rows, queryErr := db.Query("SELECT * FROM product WHERE bar_id = ?", barId)
-    if err != nil {
-        return nil, fmt.Errorf("GetAllDrinks: %v", queryErr)
+    if queryErr != nil {
+        return nil, queryErr
     }
     defer rows.Close()
+
+    for rows.Next() {
+        var drink drinksmodel.DrinkEntity
+        if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.Multiplier); convertErr != nil {
+            continue
+        }
+        drinks = append(drinks, drink)
+    }
+
+    if rowsErr := rows.Err(); rowsErr != nil {
+        return nil, rowsErr
+    }
+    return drinks, nil
 }
 
 func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (int64, error) {
