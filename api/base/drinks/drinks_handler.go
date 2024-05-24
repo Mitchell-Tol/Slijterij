@@ -99,3 +99,23 @@ func (h *DrinksHandler) UpdateDrink(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(resJson)
 }
+
+func (h *DrinksHandler) DeleteDrink(w http.ResponseWriter, r *http.Request) {
+	idBody := &drinksmodel.DrinkId{}
+	reqJsonErr := json.NewDecoder(r.Body).Decode(idBody)
+	if reqJsonErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid Body"))
+		return
+	}
+
+	dbErr := h.store.DeleteDrink(idBody.Id)
+	if dbErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Internal server error"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(nil)
+}
