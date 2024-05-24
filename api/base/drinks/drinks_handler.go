@@ -16,25 +16,25 @@ type DrinksHandler struct {
 
 func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
     barIdParams := r.URL.Query()["barId"]
-	if len(barIdParams) == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write(generic.JSONError("Please provide a valid barId as a query parameter"))
-		return
-	}
+    if len(barIdParams) == 0 {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write(generic.JSONError("Please provide a valid barId as a query parameter"))
+        return
+    }
 
-	drinks, sqlErr := h.store.GetAllDrinks(barIdParams[0])
-	if sqlErr != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(generic.JSONError("Internal server error"))
-	}
+    drinks, sqlErr := h.store.GetAllDrinks(barIdParams[0])
+    if sqlErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("Internal server error"))
+    }
 
-	jsonRes, jsonErr := json.Marshal(drinks)
-	if jsonErr != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write(generic.JSONError("Something went wrong when mapping the response to valid JSON"))
-	}
+    jsonRes, jsonErr := json.Marshal(drinks)
+    if jsonErr != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError("Something went wrong when mapping the response to valid JSON"))
+    }
 
-	w.WriteHeader(http.StatusOK)
+    w.WriteHeader(http.StatusOK)
     w.Write(jsonRes)
 }
 
