@@ -8,6 +8,7 @@ import (
     "github.com/go-sql-driver/mysql"
     "slijterij/api/base/bar/barmodel"
     "slijterij/api/base/drinks/drinksmodel"
+    "slijterij/api/base/device/devicemodel"
 	"github.com/google/uuid"
 )
 
@@ -39,6 +40,7 @@ func NewStore() *DataStore {
     return &DataStore{}
 }
 
+// BARS
 func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
     var bars []barmodel.BarEntity
 
@@ -92,19 +94,36 @@ func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
 }
 
 func (s *DataStore) UpdateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {
-	_, queryErr := db.Exec("UPDATE bar SET name = ?, password = ?, token = ? WHERE id = ?", entity.Name, entity.Password, entity.Token, entity.Id)
-	if queryErr != nil {
-		return nil, queryErr
-	}
+    _, queryErr := db.Exec("UPDATE bar SET name = ?, password = ?, token = ? WHERE id = ?", entity.Name, entity.Password, entity.Token, entity.Id)
+    if queryErr != nil {
+        return nil, queryErr
+    }
 
-	return entity, nil
+    return entity, nil
 }
 
 func (s *DataStore) DeleteBar(id string) (error) {
-	_, queryErr := db.Exec("DELETE FROM bar WHERE id = ?", id)
-	return queryErr
+    _, queryErr := db.Exec("DELETE FROM bar WHERE id = ?", id)
+    return queryErr
 }
 
+// DEVICES
+func (s *DataStore) CreateDevice(model *devicemodel.Device) (*devicemodel.DeviceEntity, error) {
+    newId := uuid.New().String()
+    _, queryErr := db.Exec("INSERT INTO device VALUES (?, ?, ?)", newId, model.BarId, model.Name)
+    if queryErr != nil {
+        return nil, queryErr
+    }
+
+    result := &devicemodel.DeviceEntity{
+        Id: newId,
+        BarId: model.BarId,
+        Name: model.Name,
+    }
+    return result, nil
+}
+
+// DRINKS
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
     var drinks []drinksmodel.DrinkEntity
 
@@ -145,15 +164,15 @@ func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (string, error)
 }
 
 func (s *DataStore) UpdateDrink(entity *drinksmodel.DrinkEntity) (*drinksmodel.DrinkEntity, error) {
-	_, queryErr := db.Exec("UPDATE product SET name = ?, start_price = ?, current_price = ?, multiplier = ?, tag = ? WHERE id = ?", entity.Name, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.Id)
-	if queryErr != nil {
-		return nil, queryErr
-	}
+    _, queryErr := db.Exec("UPDATE product SET name = ?, start_price = ?, current_price = ?, multiplier = ?, tag = ? WHERE id = ?", entity.Name, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.Id)
+    if queryErr != nil {
+        return nil, queryErr
+    }
 
-	return entity, nil
+    return entity, nil
 }
 
 func (s *DataStore) DeleteDrink(id string) (error) {
-	_, sqlErr := db.Exec("DELETE FROM product WHERE id = ?", id)
-	return sqlErr
+    _, sqlErr := db.Exec("DELETE FROM product WHERE id = ?", id)
+    return sqlErr
 }
