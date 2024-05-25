@@ -10,3 +10,7 @@ type DeviceEntity struct {
     BarId string `json:"bar_id"`
     Name string `json:"name"`
 }
+
+type DeviceByBar struct {
+	BarId string `json:"bar_id"`
+}

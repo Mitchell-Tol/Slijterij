@@ -11,6 +11,9 @@ func NewHandler(s *db.DataStore) *DeviceHandler {
 
 func (h *DeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
+	case http.MethodGet:
+		h.GetDevices(w, r)
+
     case http.MethodPost:
         h.CreateDevice(w, r)
     }
