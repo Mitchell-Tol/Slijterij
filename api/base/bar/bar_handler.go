@@ -53,7 +53,12 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-    entity := &barmodel.BarEntity{bar.Id, bar.Password, uuid.New().String()}
+    entity := &barmodel.BarEntity{
+		Id: uuid.New().String(), 
+		Name: bar.Name, 
+		Password: bar.Password, 
+		Token: uuid.New().String(),
+	}
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
@@ -76,7 +81,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    found, sqlErr := h.store.RetrieveBar(bar.Id)
+    found, sqlErr := h.store.RetrieveBar(bar.Name)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("API <--> Database communication error"))
@@ -92,6 +97,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
     tokenized := &barmodel.TokenizedBar{
         Id: found.Id,
+		Name: found.Name,
         Token: found.Token,
     }
     jsonResponse, resJsonErr := json.Marshal(tokenized)

@@ -76,14 +76,14 @@ Input: None
 
 Output:
 * Status Code: 200
-    * `[{ "id": string, "token": string }, { "id": string, "token": string }]`
+    * `[{ "id": string, "name": string, "token": string }, { "id": string, "name": string, "token": string }]`
 * Status Code: 500
     * `{ "message": string }`
 
 Status: IMPLEMENTED
 
 #### POST
-Input: `{ "id": string, "password": string }`
+Input: `{ "name": string, "password": string }`
 
 Output:
 * Status Code: 200
@@ -96,12 +96,12 @@ Output:
 Status: IMPLEMENTED
 
 #### PUT
-For updating passwords\
-Input: `{ "id": string, "password": string }`
+For updating names, passwords and tokens\
+Input: `{ "id": string, "name": string, "password": string, "token": string }`
 
 Output:
 * Status Code: 200
-    * `{ "id": string, "password": string }`
+    * `{ "id": string, "name": string, "token": string }`
 * Status Code: 400
     * `{ "message": string }`
 * Status Code: 404
@@ -130,11 +130,11 @@ Status: TO BE IMPLEMENTED
 ```
 For logging in
 #### POST
-Input: `{ "id": string, "password": string }`
+Input: `{ "name": string, "password": string }`
 
 Output:
 * Status Code: 200
-    * `{ "id": string, "token": string }`
+    * `{ "id": string, "name": string, "token": string }`
 * Status Code: 400
     * `{ "message": string }`
 * Status Code :401
