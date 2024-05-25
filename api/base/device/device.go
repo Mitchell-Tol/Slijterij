@@ -19,5 +19,8 @@ func (h *DeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPut:
 		h.UpdateDevice(w, r)
+
+	case http.MethodDelete:
+		h.DeleteDevice(w, r)
     }
 }

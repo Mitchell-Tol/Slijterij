@@ -158,6 +158,14 @@ func (s *DataStore) UpdateDevice(updated *devicemodel.UpdatedDevice) (*devicemod
 	return updated, nil
 }
 
+func (s *DataStore) DeleteDevice(id string) (error) {
+	_, queryError := db.Exec("DELETE FROM device WHERE id = ?", id)
+	if queryError != nil {
+		fmt.Println("DeleteDevice: %v", queryError)
+	}
+	return queryError
+}
+
 // DRINKS
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
 	drinks := []drinksmodel.DrinkEntity{}
