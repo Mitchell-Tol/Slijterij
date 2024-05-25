@@ -50,7 +50,7 @@ func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
     defer rows.Close()
     for rows.Next() {
         var bar barmodel.BarEntity
-        convertErr := rows.Scan(&bar.Id, &bar.Password, &bar.Token)
+        convertErr := rows.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token)
         if convertErr != nil {
             fmt.Errorf("GetAllBars %v", convertErr)
             continue
@@ -64,21 +64,21 @@ func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
     return bars, nil
 }
 
-func (s *DataStore) RetrieveBar(id string) (*barmodel.BarEntity, error) {
+func (s *DataStore) RetrieveBar(name string) (*barmodel.BarEntity, error) {
     bar := &barmodel.BarEntity{}
 
-    row := db.QueryRow("SELECT * FROM bar WHERE id = ?", id)
-    if err := row.Scan(&bar.Id, &bar.Password, &bar.Token); err != nil {
+    row := db.QueryRow("SELECT * FROM bar WHERE name = ?", name)
+    if err := row.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token); err != nil {
         if err == sql.ErrNoRows {
-            return bar, fmt.Errorf("RetrieveBar %s: no such bar", id)
+            return bar, fmt.Errorf("RetrieveBar %s: no such bar", name)
         }
-        return bar, fmt.Errorf("RetrieveBar %s: %v", id, err)
+        return bar, fmt.Errorf("RetrieveBar %s: %v", name, err)
     }
     return bar, nil
 }
 
 func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
-    result, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?)", entity.Id, entity.Password, entity.Token)
+    result, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?, ?)", entity.Id, entity.Name, entity.Password, entity.Token)
     if queryErr != nil {
         return -1, fmt.Errorf("CreateBar: %v", queryErr)
     }
@@ -89,6 +89,15 @@ func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
     }
 
     return id, nil
+}
+
+func (s *DataStore) UpdateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {
+	_, queryErr := db.Exec("UPDATE bar SET name = ?, password = ?, token = ? WHERE id = ?", entity.Name, entity.Password, entity.Token, entity.Id)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	return entity, nil
 }
 
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {

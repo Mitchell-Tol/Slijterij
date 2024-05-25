@@ -26,13 +26,7 @@ func (h *BarHandler) GetAllBars(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    var tokenized []barmodel.TokenizedBar
-    for i := 0; i < len(bars); i++ {
-        mapped := barmodel.MapEntityToTokenized(bars[i])
-        tokenized = append(tokenized, mapped)
-    }
-
-    jsonResponse, jsonErr := json.Marshal(tokenized)
+    jsonResponse, jsonErr := json.Marshal(bars)
     if jsonErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("An error occurred while mapping to JSON"))
@@ -53,7 +47,12 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-    entity := &barmodel.BarEntity{bar.Id, bar.Password, uuid.New().String()}
+    entity := &barmodel.BarEntity{
+		Id: uuid.New().String(), 
+		Name: bar.Name, 
+		Password: bar.Password, 
+		Token: uuid.New().String(),
+	}
     rowId, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
@@ -66,6 +65,33 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
     w.Write([]byte(fmt.Sprintf("Row %d created", rowId)))
 }
 
+func (h *BarHandler) UpdateBar(w http.ResponseWriter, r *http.Request) {
+	entity := &barmodel.BarEntity{}
+	reqJsonErr := json.NewDecoder(r.Body).Decode(entity)
+	if reqJsonErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid JSON"))
+		return
+	}
+
+	_, queryErr := h.store.UpdateBar(entity)
+	if queryErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Internal server error"))
+		return
+	}
+
+	jsonRes, jsonMapErr := json.Marshal(entity)
+	if jsonMapErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Error while mapping response to JSON"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonRes)
+}
+
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
     bar := &barmodel.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
@@ -76,7 +102,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    found, sqlErr := h.store.RetrieveBar(bar.Id)
+    found, sqlErr := h.store.RetrieveBar(bar.Name)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("API <--> Database communication error"))
@@ -92,6 +118,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
     tokenized := &barmodel.TokenizedBar{
         Id: found.Id,
+		Name: found.Name,
         Token: found.Token,
     }
     jsonResponse, resJsonErr := json.Marshal(tokenized)
