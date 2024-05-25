@@ -14,3 +14,8 @@ type DeviceEntity struct {
 type DeviceByBar struct {
 	BarId string `json:"bar_id"`
 }
+
+type UpdatedDevice struct {
+	Id string `json:"id"`
+	Name string `json:"name"`
+}

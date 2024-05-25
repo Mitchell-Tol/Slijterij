@@ -174,6 +174,19 @@ Output:
 
 Status: IMPLEMENTED
 
+#### PUT
+Input: `{ "id": string, "name": string }`
+
+Output:
+* Status Code: 200
+    * `{ "id": string, "name": string }`
+* Status Code: 400
+    * `{ "message": string }`
+* Status Code: 500
+    * `{ "message": string }`
+
+Status: IMPLEMENTED
+
 ### Drinks
 ```
 /drinks
