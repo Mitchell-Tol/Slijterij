@@ -92,3 +92,23 @@ func (h *DeviceHandler) UpdateDevice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonResponse)
 }
+
+func (h *DeviceHandler) DeleteDevice(w http.ResponseWriter, r *http.Request) {
+	body := &devicemodel.DeviceId{}
+	reqErr := json.NewDecoder(r.Body).Decode(body)
+	if reqErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid JSON"))
+		return
+	}
+
+	queryErr := h.store.DeleteDevice(body.Id)
+	if queryErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("An error occurred while deleting the item"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(nil)
+}

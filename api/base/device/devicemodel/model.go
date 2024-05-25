@@ -19,3 +19,7 @@ type UpdatedDevice struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 }
+
+type DeviceId struct {
+	Id string `json:"id"`
+}
