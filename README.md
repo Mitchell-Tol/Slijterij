@@ -76,7 +76,7 @@ Input: None
 
 Output:
 * Status Code: 200
-    * `[{ "id": string, "name": string, "token": string }, { "id": string, "name": string, "token": string }]`
+    * `[{ "id": string, "name": string, "password": string, "token": string }, { "id": string, "name": string, "password": string, "token": string }]`
 * Status Code: 500
     * `{ "message": string }`
 

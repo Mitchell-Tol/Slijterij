@@ -22,6 +22,9 @@ func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
         case LOGIN:
             h.HandleLogin(w, r)
         }
+
+	case http.MethodPut:
+		h.UpdateBar(w, r)
     }
 }
 

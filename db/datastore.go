@@ -91,6 +91,15 @@ func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
     return id, nil
 }
 
+func (s *DataStore) UpdateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {
+	_, queryErr := db.Exec("UPDATE bar SET name = ?, password = ?, token = ? WHERE id = ?", entity.Name, entity.Password, entity.Token, entity.Id)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	return entity, nil
+}
+
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
     var drinks []drinksmodel.DrinkEntity
 
