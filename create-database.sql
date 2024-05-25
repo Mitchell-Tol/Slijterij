@@ -13,8 +13,9 @@ CREATE TABLE `bar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `device` (
-  `id` varchar(16) NOT NULL,
+  `id` varchar(45) NOT NULL,
   `bar_id` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `room_idx` (`bar_id`),
   CONSTRAINT `belongs_to_room` FOREIGN KEY (`bar_id`) REFERENCES `bar` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
