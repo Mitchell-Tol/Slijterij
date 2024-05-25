@@ -42,7 +42,7 @@ func NewStore() *DataStore {
 
 // BARS
 func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
-    var bars []barmodel.BarEntity
+	bars := []barmodel.BarEntity{}
 
     rows, queryErr := db.Query("SELECT * FROM bar")
     if queryErr != nil {
@@ -108,6 +108,31 @@ func (s *DataStore) DeleteBar(id string) (error) {
 }
 
 // DEVICES
+func (s *DataStore) GetDevices(barId string) ([]devicemodel.DeviceEntity, error) {
+	devices := []devicemodel.DeviceEntity{}
+	rows, queryErr := db.Query("SELECT * FROM device WHERE bar_id = ?", barId)
+	if queryErr != nil {
+		fmt.Println("GetAllDevices: %v", queryErr)
+		return nil, queryErr
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var device devicemodel.DeviceEntity
+		convertErr := rows.Scan(&device.Id, &device.BarId, &device.Name)
+		if convertErr != nil {
+			fmt.Println("GetAllDevices: %v", convertErr)
+			continue
+		}
+		devices = append(devices, device)
+	}
+
+	if rowsErr := rows.Err(); rowsErr != nil {
+		return nil, rowsErr
+	}
+	return devices, nil
+}
+
 func (s *DataStore) CreateDevice(model *devicemodel.Device) (*devicemodel.DeviceEntity, error) {
     newId := uuid.New().String()
     _, queryErr := db.Exec("INSERT INTO device VALUES (?, ?, ?)", newId, model.BarId, model.Name)
@@ -125,7 +150,7 @@ func (s *DataStore) CreateDevice(model *devicemodel.Device) (*devicemodel.Device
 
 // DRINKS
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
-    var drinks []drinksmodel.DrinkEntity
+	drinks := []drinksmodel.DrinkEntity{}
 
     rows, queryErr := db.Query("SELECT * FROM product WHERE bar_id = ?", barId)
     if queryErr != nil {
