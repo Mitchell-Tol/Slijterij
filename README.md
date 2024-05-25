@@ -142,6 +142,25 @@ Output:
 
 Status: IMPLEMENTED
 
+### Device
+```
+/device
+```
+This endpoint is for retrieving and managing devices per bar.
+
+#### POST
+Input: `{ "bar_id": string, "name": string }`
+
+Output:
+* Status Code: 200
+    * `{ "id": string, "bar_id": string, "name": string }`
+* Status Code: 400
+    * `{ "message": string }`
+* Status Code: 500
+    * `{ "message": string }`
+
+Status: IMPLEMENTED
+
 ### Drinks
 ```
 /drinks

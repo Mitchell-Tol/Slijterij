@@ -8,6 +8,7 @@ import (
     "github.com/go-sql-driver/mysql"
     "slijterij/api/base/bar/barmodel"
     "slijterij/api/base/drinks/drinksmodel"
+    "slijterij/api/base/device/devicemodel"
 	"github.com/google/uuid"
 )
 
@@ -39,6 +40,7 @@ func NewStore() *DataStore {
     return &DataStore{}
 }
 
+// BARS
 func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
     var bars []barmodel.BarEntity
 
@@ -105,6 +107,23 @@ func (s *DataStore) DeleteBar(id string) (error) {
 	return queryErr
 }
 
+// DEVICES
+func (s *DataStore) CreateDevice(model *devicemodel.Device) (*devicemodel.DeviceEntity, error) {
+	newId := uuid.New().String()
+	_, queryErr := db.Exec("INSERT INTO device VALUES (?, ?, ?)", newId, model.BarId, model.Name)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+
+	result := &devicemodel.DeviceEntity{
+		Id: newId,
+		BarId: model.BarId,
+		Name: model.Name,
+	}
+	return result, nil
+}
+
+// DRINKS
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
     var drinks []drinksmodel.DrinkEntity
 

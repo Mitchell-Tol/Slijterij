@@ -36,8 +36,8 @@ CREATE TABLE `product` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `order` (
-  `id` varchar(16) NOT NULL,
-  `device_id` varchar(16) NOT NULL,
+  `id` varchar(45) NOT NULL,
+  `device_id` varchar(45) NOT NULL,
   `product_id` varchar(45) NOT NULL,
   `timestamp` datetime NOT NULL,
   `amount` int NOT NULL DEFAULT '0',
