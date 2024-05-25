@@ -18,10 +18,6 @@ type TokenizedBar struct {
     Token string `json:"token"`
 }
 
-func MapEntityToTokenized(entity BarEntity) TokenizedBar {
-    return TokenizedBar{
-		Id: entity.Id, 
-		Name: entity.Name, 
-		Token: entity.Token,
-	}
+type BarId struct {
+	Id string `json:"id"`
 }

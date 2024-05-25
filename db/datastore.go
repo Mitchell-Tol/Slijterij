@@ -100,6 +100,11 @@ func (s *DataStore) UpdateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, 
 	return entity, nil
 }
 
+func (s *DataStore) DeleteBar(id string) (error) {
+	_, queryErr := db.Exec("DELETE FROM bar WHERE id = ?", id)
+	return queryErr
+}
+
 func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error) {
     var drinks []drinksmodel.DrinkEntity
 

@@ -104,8 +104,6 @@ Output:
     * `{ "id": string, "name": string, "token": string }`
 * Status Code: 400
     * `{ "message": string }`
-* Status Code: 404
-    * `{ "message": string }`
 * Status Code: 409
     * `{ "message": string }`
 
@@ -119,7 +117,7 @@ Output:
     * `null`
 * Status Code: 400
     * `{ "message": string }`
-* Status Code: 404
+* Status Code: 500
     * `{ "message": string }`
 
 Status: TO BE IMPLEMENTED

@@ -92,6 +92,26 @@ func (h *BarHandler) UpdateBar(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonRes)
 }
 
+func (h *BarHandler) DeleteBar(w http.ResponseWriter, r *http.Request) {
+	rBody := &barmodel.BarId{}
+	jsonErr := json.NewDecoder(r.Body).Decode(rBody)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid JSON"))
+		return
+	}
+
+	queryErr := h.store.DeleteBar(rBody.Id)
+	if queryErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("Internal server error"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(nil)
+}
+
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
     bar := &barmodel.Bar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)

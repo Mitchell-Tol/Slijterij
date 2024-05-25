@@ -25,6 +25,9 @@ func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPut:
 		h.UpdateBar(w, r)
+
+	case http.MethodDelete:
+		h.DeleteBar(w, r)
     }
 }
 
