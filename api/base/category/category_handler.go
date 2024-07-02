@@ -67,9 +67,48 @@ func (h *CategoryHandler) PostCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *CategoryHandler) PutCategory(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	body := &categorymodel.UpdatedCategory{}
+	jsonErr := json.NewDecoder(r.Body).Decode(body)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid JSON"))
+		return
+	}
+
+	result, queryErr := h.store.UpdateCategory(body)
+	if queryErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("An error occurred while updating category"))
+		return
+	}
+
+	jsonResp, jsonErr := json.Marshal(result)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("An error occurred while mapping the updated category to JSON"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonResp)
 }
 
 func (h *CategoryHandler) DeleteCategory(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	body := &categorymodel.CategoryId{}
+	jsonErr := json.NewDecoder(r.Body).Decode(body)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write(generic.JSONError("Invalid JSON"))
+		return
+	}
+
+	queryErr := h.store.DeleteCategory(body.Id)
+	if queryErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("An error occurred while deleting the category"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(nil)
 }
