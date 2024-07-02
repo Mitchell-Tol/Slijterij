@@ -9,6 +9,7 @@ import (
     "slijterij/api/base/bar/barmodel"
     "slijterij/api/base/drinks/drinksmodel"
     "slijterij/api/base/device/devicemodel"
+    "slijterij/api/base/category/categorymodel"
 	"github.com/google/uuid"
 )
 
@@ -178,7 +179,7 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
 
     for rows.Next() {
         var drink drinksmodel.DrinkEntity
-        if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.Multiplier, &drink.Tag); convertErr != nil {
+        if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.Multiplier, &drink.Tag, &drink.CategoryId); convertErr != nil {
 			fmt.Errorf("GetAllDrinks %s: %v", barId, convertErr)
             continue
         }
@@ -193,7 +194,7 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
 
 func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (string, error) {
 	generatedId := uuid.New().String()
-    result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?, ?)", generatedId, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag)
+    result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?, ?, ?)", generatedId, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.CategoryId)
     if queryErr != nil {
         return "", queryErr
     }
@@ -207,7 +208,7 @@ func (s *DataStore) CreateDrink(entity *drinksmodel.DrinkEntity) (string, error)
 }
 
 func (s *DataStore) UpdateDrink(entity *drinksmodel.DrinkEntity) (*drinksmodel.DrinkEntity, error) {
-    _, queryErr := db.Exec("UPDATE product SET name = ?, start_price = ?, current_price = ?, multiplier = ?, tag = ? WHERE id = ?", entity.Name, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.Id)
+    _, queryErr := db.Exec("UPDATE product SET name = ?, start_price = ?, current_price = ?, multiplier = ?, tag = ?, category_id = ? WHERE id = ?", entity.Name, entity.StartPrice, entity.CurrentPrice, entity.Multiplier, entity.Tag, entity.CategoryId, entity.Id)
     if queryErr != nil {
         return nil, queryErr
     }
@@ -218,4 +219,29 @@ func (s *DataStore) UpdateDrink(entity *drinksmodel.DrinkEntity) (*drinksmodel.D
 func (s *DataStore) DeleteDrink(id string) (error) {
     _, sqlErr := db.Exec("DELETE FROM product WHERE id = ?", id)
     return sqlErr
+}
+
+// CATEGORIES
+func (s *DataStore) GetAllCategories(barId string) ([]categorymodel.CategoryEntity, error) {
+	categories := []categorymodel.CategoryEntity{}
+
+    rows, queryErr := db.Query("SELECT * FROM category WHERE bar_id = ?", barId)
+    if queryErr != nil {
+        return nil, queryErr
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var category categorymodel.CategoryEntity
+        if convertErr := rows.Scan(&category.Id, &category.Name, &category.BarId); convertErr != nil {
+			fmt.Errorf("GetAllDrinks %s: %v", barId, convertErr)
+            continue
+        }
+        categories = append(categories, category)
+    }
+
+    if rowsErr := rows.Err(); rowsErr != nil {
+        return nil, rowsErr
+    }
+    return categories, nil
 }
