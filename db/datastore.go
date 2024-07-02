@@ -245,3 +245,32 @@ func (s *DataStore) GetAllCategories(barId string) ([]categorymodel.CategoryEnti
     }
     return categories, nil
 }
+
+func (s *DataStore) CreateCategory(model *categorymodel.Category) (*categorymodel.CategoryEntity, error) {
+    newId := uuid.New().String()
+    _, queryErr := db.Exec("INSERT INTO category VALUES (?, ?, ?)", newId, model.Name, model.BarId)
+    if queryErr != nil {
+        return nil, queryErr
+    }
+
+    result := &categorymodel.CategoryEntity{
+        Id: newId,
+        BarId: model.BarId,
+        Name: model.Name,
+    }
+    return result, nil
+}
+
+func (s *DataStore) UpdateCategory(model *categorymodel.UpdatedCategory) (*categorymodel.UpdatedCategory, error) {
+    _, queryErr := db.Exec("UPDATE category SET name = ? WHERE id = ?", model.Name, model.Id)
+    if queryErr != nil {
+        return nil, queryErr
+    }
+
+    return model, nil
+}
+
+func (s *DataStore) DeleteCategory(id string) (error) {
+    _, sqlErr := db.Exec("DELETE FROM category WHERE id = ?", id)
+    return sqlErr
+}
