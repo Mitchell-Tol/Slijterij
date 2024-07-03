@@ -10,6 +10,7 @@ import (
     "slijterij/api/base/drinks/drinksmodel"
     "slijterij/api/base/device/devicemodel"
     "slijterij/api/base/category/categorymodel"
+    "slijterij/api/base/order/ordermodel"
 	"github.com/google/uuid"
 )
 
@@ -150,7 +151,7 @@ func (s *DataStore) CreateDevice(model *devicemodel.Device) (*devicemodel.Device
 }
 
 func (s *DataStore) UpdateDevice(updated *devicemodel.UpdatedDevice) (*devicemodel.UpdatedDevice, error) {
-	_, queryErr := db.Exec("UPDATE device SET name = ?", updated.Name)
+	_, queryErr := db.Exec("UPDATE device SET name = ? WHERE id = ?", updated.Name, updated.Id)
 	if queryErr != nil {
 		fmt.Println("UpdateDevice: %v", queryErr)
 		return nil, queryErr
@@ -234,7 +235,7 @@ func (s *DataStore) GetAllCategories(barId string) ([]categorymodel.CategoryEnti
     for rows.Next() {
         var category categorymodel.CategoryEntity
         if convertErr := rows.Scan(&category.Id, &category.Name, &category.BarId); convertErr != nil {
-			fmt.Errorf("GetAllDrinks %s: %v", barId, convertErr)
+			fmt.Errorf("GetAllCategories %s: %v", barId, convertErr)
             continue
         }
         categories = append(categories, category)
@@ -273,4 +274,65 @@ func (s *DataStore) UpdateCategory(model *categorymodel.UpdatedCategory) (*categ
 func (s *DataStore) DeleteCategory(id string) (error) {
     _, sqlErr := db.Exec("DELETE FROM category WHERE id = ?", id)
     return sqlErr
+}
+
+// ORDERS
+func (s *DataStore) GetAllOrders(deviceId string) ([]ordermodel.OrderEntity, error) {
+	orders := []ordermodel.OrderEntity{}
+
+    rows, queryErr := db.Query("SELECT * FROM `order` WHERE device_id = ?", deviceId)
+    if queryErr != nil {
+        return nil, fmt.Errorf("GetAllOrders %s: %v\n", deviceId, queryErr)
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var order ordermodel.OrderEntity
+        if convertErr := rows.Scan(&order.Id, &order.DeviceId, &order.ProductId, &order.Timestamp, &order.Amount, &order.PricePerProduct); convertErr != nil {
+			fmt.Errorf("GetAllOrders %s: %v\n", deviceId, convertErr)
+            continue
+        }
+        orders = append(orders, order)
+    }
+
+    if rowsErr := rows.Err(); rowsErr != nil {
+        return nil, rowsErr
+    }
+    return orders, nil
+}
+
+func (s *DataStore) CreateOrder(model *ordermodel.Order) (*ordermodel.OrderEntity, error) {
+    newId := uuid.New().String()
+    _, queryErr := db.Exec("INSERT INTO `order` VALUES (?, ?, ?, ?, ?, ?)", newId, model.DeviceId, model.ProductId, model.Timestamp, model.Amount, model.PricePerProduct)
+    if queryErr != nil {
+        return nil, fmt.Errorf("GetAllOrders: %v\n", queryErr)
+    }
+
+    result := &ordermodel.OrderEntity{
+        Id: newId,
+		DeviceId: model.DeviceId,
+		ProductId: model.ProductId,
+		Timestamp: model.Timestamp,
+		Amount: model.Amount,
+		PricePerProduct: model.PricePerProduct,
+    }
+    return result, nil
+}
+
+func (s *DataStore) UpdateOrder(updated *ordermodel.UpdatedOrder) (*ordermodel.UpdatedOrder, error) {
+	_, queryErr := db.Exec("UPDATE `order` SET device_id = ?, product_id = ?, amount = ?, price_per_product = ? WHERE id = ?", updated.DeviceId, updated.ProductId, updated.Amount, updated.PricePerProduct, updated.Id)
+	if queryErr != nil {
+		fmt.Println("UpdateOrder: %v", queryErr)
+		return nil, queryErr
+	}
+
+	return updated, nil
+}
+
+func (s *DataStore) DeleteOrder(id string) (error) {
+	_, queryError := db.Exec("DELETE FROM `order` WHERE id = ?", id)
+	if queryError != nil {
+		fmt.Println("DeleteOrder: %v", queryError)
+	}
+	return queryError
 }
