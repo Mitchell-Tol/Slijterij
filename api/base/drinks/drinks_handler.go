@@ -41,15 +41,26 @@ func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
-    drink := &drinksmodel.DrinkEntity{}
+    drink := &drinksmodel.Drink{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(drink)
     if reqJsonErr != nil {
         w.WriteHeader(http.StatusBadRequest)
         w.Write(generic.JSONError("Bad Request: Invalid JSON"))
+		return
     }
 
     id, sqlErr := h.store.CreateDrink(drink)
-	drink.Id = id
+	entity := &drinksmodel.DrinkEntity{
+		Id: id,
+		Name: drink.Name,
+		BarId: drink.BarId,
+		StartPrice: drink.StartPrice,
+		CurrentPrice: drink.CurrentPrice,
+		RiseMultiplier: drink.RiseMultiplier,
+		Tag: drink.Tag,
+		CategoryId: drink.CategoryId,
+		DropMultiplier: drink.DropMultiplier,
+	}
     if sqlErr != nil {
         code := errors.MySQLErrorCode(sqlErr)
         if code == 1062 {
@@ -63,7 +74,7 @@ func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    jsonResponse, resJsonErr := json.Marshal(drink)
+    jsonResponse, resJsonErr := json.Marshal(entity)
     if resJsonErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Could not create JSON response but item is created"))
