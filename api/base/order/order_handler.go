@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"slijterij/api/base/drinks/drinksmodel"
 	"slijterij/api/base/order/ordermodel"
 	"slijterij/api/generic"
 	"slijterij/db"
@@ -56,6 +57,11 @@ func (h *OrderHandler) PostOrder(w http.ResponseWriter, r *http.Request) {
         w.Write(generic.JSONError("Internal server error"))
         return
     }
+
+	increaseErr := h.IncreaseDrink(entity.ProductId, body.Amount)
+	if increaseErr != nil {
+		fmt.Println("%v", increaseErr)
+	}
 
     jsonResp, jsonErr := json.Marshal(entity)
     if jsonErr != nil {
@@ -113,4 +119,40 @@ func (h *OrderHandler) DeleteOrder(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(nil)
+}
+
+func (h *OrderHandler) IncreaseDrink(id string, amount int) (error) {
+	drink, drinkQueryErr := h.store.GetDrink(id)
+	if drinkQueryErr != nil {
+		return fmt.Errorf("IncreaseDrink %s: %v", id, drinkQueryErr)
+	}
+
+	allDrinks, allDrinksErr := h.store.GetDrinksByCategory(drink.CategoryId)
+	if allDrinksErr != nil {
+		return fmt.Errorf("IncreaseDrink %s: %v", id, allDrinksErr)
+	}
+
+	for i := 0; i < len(allDrinks); i++ {
+		var newPrice float32
+		if allDrinks[i].Id == drink.Id {
+			newPrice = drink.CurrentPrice + drink.StartPrice * drink.RiseMultiplier * float32(amount)
+		} else {
+			newPrice = drink.CurrentPrice - drink.StartPrice * drink.DropMultiplier * float32(amount)
+		}
+		h.store.UpdateDrink(
+			&drinksmodel.DrinkEntity{
+				Id: allDrinks[i].Id,
+				Name: allDrinks[i].Name,
+				BarId: allDrinks[i].BarId,
+				StartPrice: allDrinks[i].StartPrice,
+				CurrentPrice: newPrice,
+				RiseMultiplier: allDrinks[i].RiseMultiplier,
+				Tag: allDrinks[i].Tag,
+				CategoryId: allDrinks[i].CategoryId,
+				DropMultiplier: allDrinks[i].DropMultiplier,
+			},
+		)
+	}
+
+	return nil
 }

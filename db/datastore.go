@@ -194,6 +194,42 @@ func (s *DataStore) GetAllDrinks(barId string) ([]drinksmodel.DrinkEntity, error
 	return drinks, nil
 }
 
+func (s *DataStore) GetDrinksByCategory(categoryId string) ([]drinksmodel.DrinkEntity, error) {
+	drinks := []drinksmodel.DrinkEntity{}
+
+	rows, queryErr := db.Query("SELECT * FROM product WHERE category_id = ?", categoryId)
+	if queryErr != nil {
+		return nil, queryErr
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var drink drinksmodel.DrinkEntity
+		if convertErr := rows.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.RiseMultiplier, &drink.Tag, &drink.CategoryId, &drink.DropMultiplier); convertErr != nil {
+			fmt.Errorf("GetAllDrinks %s: %v", categoryId, convertErr)
+			continue
+		}
+		drinks = append(drinks, drink)
+	}
+
+	if rowsErr := rows.Err(); rowsErr != nil {
+		return nil, rowsErr
+	}
+	return drinks, nil
+}
+
+func (s *DataStore) GetDrink(id string) (*drinksmodel.DrinkEntity, error) {
+	drink := &drinksmodel.DrinkEntity{}
+
+	row := db.QueryRow("SELECT * FROM product WHERE id = ?", id)
+	queryErr := row.Scan(&drink.Id, &drink.Name, &drink.BarId, &drink.StartPrice, &drink.CurrentPrice, &drink.RiseMultiplier, &drink.Tag, &drink.CategoryId, &drink.DropMultiplier)
+	if queryErr != nil {
+		return drink, fmt.Errorf("GetDrink %s: %v", id, queryErr)
+	}
+
+	return drink, nil
+}
+
 func (s *DataStore) CreateDrink(entity *drinksmodel.Drink) (string, error) {
 	generatedId := uuid.New().String()
 	result, queryErr := db.Exec("INSERT INTO product VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", generatedId, entity.Name, entity.BarId, entity.StartPrice, entity.CurrentPrice, entity.RiseMultiplier, entity.Tag, entity.CategoryId, entity.DropMultiplier)
