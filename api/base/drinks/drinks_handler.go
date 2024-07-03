@@ -67,6 +67,7 @@ func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
     if resJsonErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Could not create JSON response but item is created"))
+		return
     }
 
     w.WriteHeader(http.StatusCreated)

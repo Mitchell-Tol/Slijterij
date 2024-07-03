@@ -52,7 +52,7 @@ CREATE TABLE `order` (
   `id` varchar(45) NOT NULL,
   `device_id` varchar(45) NOT NULL,
   `product_id` varchar(45) NOT NULL,
-  `timestamp` datetime NOT NULL,
+  `timestamp` varchar(45) NOT NULL,
   `amount` int NOT NULL DEFAULT '0',
   `price_per_product` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
