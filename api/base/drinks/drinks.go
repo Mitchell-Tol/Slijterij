@@ -1,8 +1,9 @@
 package drinks
 
 import (
-    "net/http"
-    "slijterij/db"
+	"net/http"
+	"slijterij/api/generic"
+	"slijterij/db"
 )
 
 func NewHandler(s *db.DataStore) *DrinksHandler {
@@ -10,6 +11,7 @@ func NewHandler(s *db.DataStore) *DrinksHandler {
 }
 
 func (h *DrinksHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	generic.EnableCors(&w)
     switch r.Method {
     case http.MethodGet:
         h.GetAllDrinks(w, r)

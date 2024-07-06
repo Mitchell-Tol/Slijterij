@@ -1,8 +1,9 @@
 package device
 
-import(
-    "net/http"
-    "slijterij/db"
+import (
+	"net/http"
+	"slijterij/api/generic"
+	"slijterij/db"
 )
 
 func NewHandler(s *db.DataStore) *DeviceHandler {
@@ -10,6 +11,7 @@ func NewHandler(s *db.DataStore) *DeviceHandler {
 }
 
 func (h *DeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	generic.EnableCors(&w)
     switch r.Method {
 	case http.MethodGet:
 		h.GetDevices(w, r)

@@ -2,6 +2,7 @@ package order
 
 import (
 	"net/http"
+	"slijterij/api/generic"
 	"slijterij/db"
 )
 
@@ -10,6 +11,7 @@ func NewHandler(s *db.DataStore) *OrderHandler {
 }
 
 func (h *OrderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	generic.EnableCors(&w)
 	switch r.Method {
 	case http.MethodGet:
 		h.GetOrders(w, r)
