@@ -2,7 +2,6 @@ package category
 
 import (
 	"net/http"
-	"slijterij/api/generic"
 	"slijterij/db"
 )
 
@@ -11,7 +10,6 @@ func NewHandler(s *db.DataStore) *CategoryHandler {
 }
 
 func (h *CategoryHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	generic.EnableCors(&w)
 	switch r.Method {
 	case http.MethodGet:
 		h.GetCategories(w, r)

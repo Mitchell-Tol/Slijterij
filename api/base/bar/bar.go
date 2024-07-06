@@ -2,7 +2,6 @@ package bar
 
 import (
 	"net/http"
-	"slijterij/api/generic"
 	"slijterij/db"
 )
 
@@ -11,7 +10,6 @@ func NewHandler(s *db.DataStore, url string) *BarHandler {
 }
 
 func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	generic.EnableCors(&w)
     switch r.Method {
     case http.MethodGet:
         h.GetAllBars(w, r)
