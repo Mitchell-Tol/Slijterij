@@ -15,7 +15,6 @@ import (
 func main() {
     fmt.Println("Starting API Service")
 
-    SetEnvVars()
     store := db.NewStore()
 
 	baseHandler := base.NewHandler()

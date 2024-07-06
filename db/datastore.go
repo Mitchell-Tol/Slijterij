@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 	"slijterij/api/base/bar/barmodel"
 	"slijterij/api/base/category/categorymodel"
 	"slijterij/api/base/device/devicemodel"
 	"slijterij/api/base/drinks/drinksmodel"
 	"slijterij/api/base/order/ordermodel"
-
-	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -20,24 +19,27 @@ var db *sql.DB
 type DataStore struct{}
 
 func NewStore() *DataStore {
-	cfg := mysql.Config{
-		User:                 os.Getenv("DBUSER"),
-		Passwd:               os.Getenv("DBPASS"),
-		Net:                  "tcp",
-		Addr:                 "127.0.0.1:3306",
-		DBName:               "drankbeurs",
-		AllowNativePasswords: true,
-	}
+	user := os.Getenv("DBUSER")
+	password := os.Getenv("DBPASS")
+	database := os.Getenv("DBNAME")
 
-	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr)
+	connectSuccess := false
+	for !connectSuccess {
+		log.Println("Connecting to MYSQL")
+		var err error
+		db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(db:3306)/%s", user, password, database))
+		if err != nil {
+			log.Println(err)
+		}
+	
+		pingErr := db.Ping()
+		if pingErr != nil {
+			log.Println(pingErr)
+			log.Println("Trying again in 5s")
+			time.Sleep(5000000000)
+		} else {
+			connectSuccess = true
+		}
 	}
 
 	return &DataStore{}
