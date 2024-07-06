@@ -84,18 +84,13 @@ func (s *DataStore) RetrieveBar(name string) (*barmodel.BarEntity, error) {
 	return bar, nil
 }
 
-func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (int64, error) {
-	result, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?, ?)", entity.Id, entity.Name, entity.Password, entity.Token)
+func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {
+	_, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?, ?)", entity.Id, entity.Name, entity.Password, entity.Token)
 	if queryErr != nil {
-		return -1, fmt.Errorf("CreateBar: %v", queryErr)
+		return nil, fmt.Errorf("CreateBar: %v", queryErr)
 	}
 
-	id, idErr := result.LastInsertId()
-	if idErr != nil {
-		return -1, fmt.Errorf("CreateBar: %v", idErr)
-	}
-
-	return id, nil
+	return entity, nil
 }
 
 func (s *DataStore) UpdateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {

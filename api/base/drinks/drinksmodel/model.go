@@ -26,7 +26,3 @@ type Drink struct {
 type DrinkId struct {
 	Id string `json:"id"`
 }
-
-type DrinkByBar struct {
-	BarId string `json:"bar_id"`
-}

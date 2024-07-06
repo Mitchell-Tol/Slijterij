@@ -25,10 +25,6 @@ type UpdatedOrder struct {
 	PricePerProduct float32 `json:"price_per_product"`
 }
 
-type OrderByDevice struct {
-	DeviceId string `json:"device_id"`
-}
-
 type OrderId struct {
 	Id string `json:"id"`
 }

@@ -53,7 +53,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
 		Password: bar.Password, 
 		Token: uuid.New().String(),
 	}
-    rowId, sqlErr := h.store.CreateBar(entity)
+    result, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("API <--> Database communication error"))
@@ -61,8 +61,15 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+	jsonRes, jsonErr := json.Marshal(result)
+	if jsonErr != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(generic.JSONError("An error occurred while mapping result to JSON"))
+		return
+	}
+
     w.WriteHeader(http.StatusOK)
-    w.Write([]byte(fmt.Sprintf("Row %d created", rowId)))
+    w.Write(jsonRes)
 }
 
 func (h *BarHandler) UpdateBar(w http.ResponseWriter, r *http.Request) {

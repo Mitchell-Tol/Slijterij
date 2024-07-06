@@ -15,15 +15,14 @@ type OrderHandler struct {
 }
 
 func (h *OrderHandler) GetOrders(w http.ResponseWriter, r *http.Request) {
-	body := &ordermodel.OrderByDevice{}
-	jsonErr := json.NewDecoder(r.Body).Decode(body)
-	if jsonErr != nil {
+	params := r.URL.Query()["deviceId"]
+	if len(params) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(generic.JSONError("Invalid JSON"))
+		w.Write(generic.JSONError("No deviceId parameter provided"))
 		return
 	}
 
-	result, queryErr := h.store.GetAllOrders(body.DeviceId)
+	result, queryErr := h.store.GetAllOrders(params[0])
 	if queryErr != nil {
 		fmt.Printf("%v", queryErr)
 		w.WriteHeader(http.StatusInternalServerError)

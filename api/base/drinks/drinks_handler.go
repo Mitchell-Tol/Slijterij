@@ -15,15 +15,14 @@ type DrinksHandler struct {
 }
 
 func (h *DrinksHandler) GetAllDrinks(w http.ResponseWriter, r *http.Request) {
-	body := &drinksmodel.DrinkByBar{}
-	jsonErr := json.NewDecoder(r.Body).Decode(body)
-	if jsonErr != nil {
+	barIdParams := r.URL.Query()["barId"]
+	if len(barIdParams) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(generic.JSONError("Invalid JSON"))
+		w.Write(generic.JSONError("No barId parameter provided"))
 		return
 	}
 
-    drinks, sqlErr := h.store.GetAllDrinks(body.BarId)
+    drinks, sqlErr := h.store.GetAllDrinks(barIdParams[0])
     if sqlErr != nil {
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Internal server error"))

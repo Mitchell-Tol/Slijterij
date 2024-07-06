@@ -13,15 +13,14 @@ type CategoryHandler struct {
 }
 
 func (h *CategoryHandler) GetCategories(w http.ResponseWriter, r *http.Request) {
-	body := &categorymodel.CategoryByBar{}
-	jsonErr := json.NewDecoder(r.Body).Decode(body)
-	if jsonErr != nil {
+	params := r.URL.Query()["barId"]
+	if len(params) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(generic.JSONError("Invalid JSON"))
+		w.Write(generic.JSONError("No barId parameter provided"))
 		return
 	}
 
-	result, retrieveErr := h.store.GetAllCategories(body.BarId)
+	result, retrieveErr := h.store.GetAllCategories(params[0])
 	if retrieveErr != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(generic.JSONError("An error occurred while retrieving categories"))

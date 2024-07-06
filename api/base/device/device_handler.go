@@ -13,15 +13,14 @@ type DeviceHandler struct {
 }
 
 func (h *DeviceHandler) GetDevices(w http.ResponseWriter, r *http.Request) {
-	body := &devicemodel.DeviceByBar{}
-	jsonErr := json.NewDecoder(r.Body).Decode(body)
-	if jsonErr != nil {
+	params := r.URL.Query()["barId"]
+	if len(params) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write(generic.JSONError("Invalid JSON"))
+		w.Write(generic.JSONError("No barId parameter provided"))
 		return
 	}
 
-	result, retrieveErr := h.store.GetDevices(body.BarId)
+	result, retrieveErr := h.store.GetDevices(params[0])
 	if retrieveErr != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write(generic.JSONError("An error occurred while retrieving devices"))
