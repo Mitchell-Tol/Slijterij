@@ -38,7 +38,7 @@ func (h *BarHandler) GetAllBars(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
-    bar := &barmodel.Bar{}
+    bar := &barmodel.Bar{SuperAdmin: 0}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -52,6 +52,7 @@ func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
 		Name: bar.Name, 
 		Password: bar.Password, 
 		Token: uuid.New().String(),
+		SuperAdmin: bar.SuperAdmin,
 	}
     result, sqlErr := h.store.CreateBar(entity)
     if sqlErr != nil {
@@ -120,7 +121,7 @@ func (h *BarHandler) DeleteBar(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
-    bar := &barmodel.Bar{}
+    bar := &barmodel.LoginBar{}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
 
     if reqJsonErr != nil {
@@ -147,6 +148,7 @@ func (h *BarHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
         Id: found.Id,
 		Name: found.Name,
         Token: found.Token,
+		SuperAdmin: found.SuperAdmin,
     }
     jsonResponse, resJsonErr := json.Marshal(tokenized)
 
@@ -164,4 +166,3 @@ func SendBadRequest(w http.ResponseWriter) {
     w.WriteHeader(http.StatusBadRequest)
     w.Write(generic.JSONError("Bad Request"))
 }
-

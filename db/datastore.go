@@ -22,16 +22,17 @@ func NewStore() *DataStore {
 	user := os.Getenv("DBUSER")
 	password := os.Getenv("DBPASS")
 	database := os.Getenv("DBNAME")
+	address := "db"
 
 	connectSuccess := false
 	for !connectSuccess {
 		log.Println("Connecting to MYSQL")
 		var err error
-		db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(db:3306)/%s", user, password, database))
+		db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", user, password, address, database))
 		if err != nil {
 			log.Println(err)
 		}
-	
+
 		pingErr := db.Ping()
 		if pingErr != nil {
 			log.Println(pingErr)
@@ -57,7 +58,7 @@ func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var bar barmodel.BarEntity
-		convertErr := rows.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token)
+		convertErr := rows.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token, &bar.SuperAdmin)
 		if convertErr != nil {
 			fmt.Errorf("GetAllBars %v", convertErr)
 			continue
@@ -75,7 +76,7 @@ func (s *DataStore) RetrieveBar(name string) (*barmodel.BarEntity, error) {
 	bar := &barmodel.BarEntity{}
 
 	row := db.QueryRow("SELECT * FROM bar WHERE name = ?", name)
-	if err := row.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token); err != nil {
+	if err := row.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token, &bar.SuperAdmin); err != nil {
 		if err == sql.ErrNoRows {
 			return bar, fmt.Errorf("RetrieveBar %s: no such bar", name)
 		}
@@ -85,7 +86,7 @@ func (s *DataStore) RetrieveBar(name string) (*barmodel.BarEntity, error) {
 }
 
 func (s *DataStore) CreateBar(entity *barmodel.BarEntity) (*barmodel.BarEntity, error) {
-	_, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?, ?)", entity.Id, entity.Name, entity.Password, entity.Token)
+	_, queryErr := db.Exec("INSERT INTO bar VALUES (?, ?, ?, ?, ?)", entity.Id, entity.Name, entity.Password, entity.Token, entity.SuperAdmin)
 	if queryErr != nil {
 		return nil, fmt.Errorf("CreateBar: %v", queryErr)
 	}
