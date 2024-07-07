@@ -12,7 +12,12 @@ func NewHandler(s *db.DataStore, url string) *BarHandler {
 func (h *BarHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     switch r.Method {
     case http.MethodGet:
-        h.GetAllBars(w, r)
+        params := r.URL.Query()["id"]
+        if len(params) > 0 {
+            h.GetBarById(w, r)
+        } else {
+            h.GetAllBars(w, r)
+        }
         
     case http.MethodPost:
         switch h.URL {
