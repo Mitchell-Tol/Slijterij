@@ -6,6 +6,7 @@ CREATE TABLE `bar` (
   `name` varchar(45) NOT NULL,
   `password` varchar(45) NOT NULL,
   `token` varchar(45) NOT NULL,
+  `super_admin` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
