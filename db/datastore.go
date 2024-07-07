@@ -72,15 +72,28 @@ func (s *DataStore) GetAllBars() ([]barmodel.BarEntity, error) {
 	return bars, nil
 }
 
+func (s *DataStore) BarById(id string) (*barmodel.BarEntity, error) {
+	bar := &barmodel.BarEntity{}
+
+	row := db.QueryRow("SELECT * FROM bar WHERE id = ?", id)
+	if err := row.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token, &bar.SuperAdmin); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("RetrieveBar %s: no such bar", id)
+		}
+		return nil, fmt.Errorf("RetrieveBar %s: %v", id, err)
+	}
+	return bar, nil
+}
+
 func (s *DataStore) RetrieveBar(name string) (*barmodel.BarEntity, error) {
 	bar := &barmodel.BarEntity{}
 
 	row := db.QueryRow("SELECT * FROM bar WHERE name = ?", name)
 	if err := row.Scan(&bar.Id, &bar.Name, &bar.Password, &bar.Token, &bar.SuperAdmin); err != nil {
 		if err == sql.ErrNoRows {
-			return bar, fmt.Errorf("RetrieveBar %s: no such bar", name)
+			return nil, fmt.Errorf("RetrieveBar %s: no such bar", name)
 		}
-		return bar, fmt.Errorf("RetrieveBar %s: %v", name, err)
+		return nil, fmt.Errorf("RetrieveBar %s: %v", name, err)
 	}
 	return bar, nil
 }

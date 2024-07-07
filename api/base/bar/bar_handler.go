@@ -37,6 +37,34 @@ func (h *BarHandler) GetAllBars(w http.ResponseWriter, r *http.Request) {
     w.Write(jsonResponse)
 }
 
+func (h *BarHandler) GetBarById(w http.ResponseWriter, r *http.Request) {
+    params := r.URL.Query()["id"]
+    if len(params) == 0 {
+        w.WriteHeader(http.StatusBadRequest)
+        w.Write(generic.JSONError("No bar id provided"))
+        return
+    }
+
+    result, retrieveErr := h.store.BarById(params[0])
+    if retrieveErr != nil {
+        fmt.Printf("GetBarById %s: %v\n", params[0], retrieveErr)
+        w.WriteHeader(http.StatusNotFound)
+        w.Write(generic.JSONError(fmt.Sprintf("Bar with id %s not found", params[0])))
+        return
+    }
+
+    jsonResp, jsonErr := json.Marshal(result)
+    if jsonErr != nil {
+        fmt.Printf("%s", jsonErr)
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write(generic.JSONError(fmt.Sprintf("%s", jsonErr)))
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    w.Write(jsonResp)
+}
+
 func (h *BarHandler) CreateBar(w http.ResponseWriter, r *http.Request) {
     bar := &barmodel.Bar{SuperAdmin: 0}
     reqJsonErr := json.NewDecoder(r.Body).Decode(bar)
