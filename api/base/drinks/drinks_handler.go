@@ -60,6 +60,7 @@ func (h *DrinksHandler) CreateDrink(w http.ResponseWriter, r *http.Request) {
 		Tag: drink.Tag,
 		CategoryId: drink.CategoryId,
 		DropMultiplier: drink.DropMultiplier,
+		LastChange: 0.0,
 	}
     if sqlErr != nil {
         code := errors.MySQLErrorCode(sqlErr)

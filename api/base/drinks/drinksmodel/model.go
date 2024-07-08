@@ -10,6 +10,7 @@ type DrinkEntity struct {
 	Tag string `json:"tag"`
 	CategoryId string `json:"category_id"`
 	DropMultiplier float32 `json:"drop_multiplier"`
+    LastChange float32 `json:"last_change"`
 }
 
 type Drink struct {
