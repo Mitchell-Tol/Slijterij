@@ -307,7 +307,7 @@ func (s *DataStore) CreateCategory(model *categorymodel.Category) (*categorymode
 		Id:    newId,
 		BarId: model.BarId,
 		Name:  model.Name,
-		Color: model.Color
+		Color: model.Color,
 	}
 	return result, nil
 }
