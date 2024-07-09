@@ -17,6 +17,7 @@ CREATE TABLE `category` (
   `id` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
   `bar_id` varchar(45) NOT NULL,
+  `color` varchar(45) NOT NULL DEFAULT 'FFFFFF',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `implemented_by_idx` (`bar_id`),
