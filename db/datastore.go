@@ -283,7 +283,7 @@ func (s *DataStore) GetAllCategories(barId string) ([]categorymodel.CategoryEnti
 
 	for rows.Next() {
 		var category categorymodel.CategoryEntity
-		if convertErr := rows.Scan(&category.Id, &category.Name, &category.BarId); convertErr != nil {
+		if convertErr := rows.Scan(&category.Id, &category.Name, &category.BarId, &category.Color); convertErr != nil {
 			fmt.Errorf("GetAllCategories %s: %v", barId, convertErr)
 			continue
 		}
@@ -298,7 +298,7 @@ func (s *DataStore) GetAllCategories(barId string) ([]categorymodel.CategoryEnti
 
 func (s *DataStore) CreateCategory(model *categorymodel.Category) (*categorymodel.CategoryEntity, error) {
 	newId := uuid.New().String()
-	_, queryErr := db.Exec("INSERT INTO category VALUES (?, ?, ?)", newId, model.Name, model.BarId)
+	_, queryErr := db.Exec("INSERT INTO category VALUES (?, ?, ?, ?)", newId, model.Name, model.BarId, model.Color)
 	if queryErr != nil {
 		return nil, queryErr
 	}
@@ -307,12 +307,13 @@ func (s *DataStore) CreateCategory(model *categorymodel.Category) (*categorymode
 		Id:    newId,
 		BarId: model.BarId,
 		Name:  model.Name,
+		Color: model.Color
 	}
 	return result, nil
 }
 
 func (s *DataStore) UpdateCategory(model *categorymodel.UpdatedCategory) (*categorymodel.UpdatedCategory, error) {
-	_, queryErr := db.Exec("UPDATE category SET name = ? WHERE id = ?", model.Name, model.Id)
+	_, queryErr := db.Exec("UPDATE category SET name = ?, color = ? WHERE id = ?", model.Name, model.Color, model.Id)
 	if queryErr != nil {
 		return nil, queryErr
 	}
