@@ -136,7 +136,7 @@ func (h *OrderHandler) IncreaseDrink(id string, amount int) (error) {
 		if allDrinks[i].Id == drink.Id {
 			newPrice = drink.CurrentPrice + drink.StartPrice * drink.RiseMultiplier * float32(amount)
 		} else {
-			newPrice = drink.CurrentPrice - drink.StartPrice * drink.DropMultiplier * float32(amount)
+			newPrice = allDrinks[i].CurrentPrice - allDrinks[i].StartPrice * allDrinks[i].DropMultiplier * float32(amount)
 		}
 		h.store.UpdateDrink(
 			&drinksmodel.DrinkEntity{
