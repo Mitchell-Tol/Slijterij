@@ -36,7 +36,7 @@ func main() {
 	mux.Handle("/order", orderHandler)
 
 	corsSettings := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:*", "http://172.235.160.66:*"},
+		AllowedOrigins: []string{"http://localhost:*", "192.168.178.137:*", "http://192.168.178.153:*"},
 		AllowCredentials: true,
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
 	})
