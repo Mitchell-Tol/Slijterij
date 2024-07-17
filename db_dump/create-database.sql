@@ -58,6 +58,7 @@ CREATE TABLE `order` (
   `timestamp` varchar(45) NOT NULL,
   `amount` int NOT NULL DEFAULT '0',
   `price_per_product` decimal(10,2) NOT NULL,
+  `method` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `product_idx` (`product_id`),
   KEY `ordered_by_idx` (`device_id`),

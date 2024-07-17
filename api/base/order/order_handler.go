@@ -52,6 +52,7 @@ func (h *OrderHandler) PostOrder(w http.ResponseWriter, r *http.Request) {
 
     entity, queryErr := h.store.CreateOrder(body)
     if queryErr != nil {
+		fmt.Println("Error in CreateOrder: %v", queryErr)
         w.WriteHeader(http.StatusInternalServerError)
         w.Write(generic.JSONError("Internal server error"))
         return

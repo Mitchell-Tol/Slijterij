@@ -338,7 +338,7 @@ func (s *DataStore) GetAllOrders(deviceId string) ([]ordermodel.OrderEntity, err
 
 	for rows.Next() {
 		var order ordermodel.OrderEntity
-		if convertErr := rows.Scan(&order.Id, &order.DeviceId, &order.ProductId, &order.Timestamp, &order.Amount, &order.PricePerProduct); convertErr != nil {
+		if convertErr := rows.Scan(&order.Id, &order.DeviceId, &order.ProductId, &order.Timestamp, &order.Amount, &order.PricePerProduct, &order.Method); convertErr != nil {
 			fmt.Errorf("GetAllOrders %s: %v\n", deviceId, convertErr)
 			continue
 		}
@@ -353,24 +353,25 @@ func (s *DataStore) GetAllOrders(deviceId string) ([]ordermodel.OrderEntity, err
 
 func (s *DataStore) CreateOrder(model *ordermodel.Order) (*ordermodel.OrderEntity, error) {
 	newId := uuid.New().String()
-	_, queryErr := db.Exec("INSERT INTO `order` VALUES (?, ?, ?, ?, ?, ?)", newId, model.DeviceId, model.ProductId, model.Timestamp, model.Amount, model.PricePerProduct)
+	_, queryErr := db.Exec("INSERT INTO `order` VALUES (?, ?, ?, ?, ?, ?, ?)", newId, model.DeviceId, model.ProductId, model.Timestamp, model.Amount, model.PricePerProduct, model.Method)
 	if queryErr != nil {
 		return nil, fmt.Errorf("GetAllOrders: %v\n", queryErr)
 	}
 
 	result := &ordermodel.OrderEntity{
-		Id:              newId,
-		DeviceId:        model.DeviceId,
-		ProductId:       model.ProductId,
-		Timestamp:       model.Timestamp,
-		Amount:          model.Amount,
-		PricePerProduct: model.PricePerProduct,
+		Id:              	newId,
+		DeviceId:        	model.DeviceId,
+		ProductId:       	model.ProductId,
+		Timestamp:       	model.Timestamp,
+		Amount:          	model.Amount,
+		PricePerProduct:	model.PricePerProduct,
+		Method:				model.Method,
 	}
 	return result, nil
 }
 
 func (s *DataStore) UpdateOrder(updated *ordermodel.UpdatedOrder) (*ordermodel.UpdatedOrder, error) {
-	_, queryErr := db.Exec("UPDATE `order` SET device_id = ?, product_id = ?, amount = ?, price_per_product = ? WHERE id = ?", updated.DeviceId, updated.ProductId, updated.Amount, updated.PricePerProduct, updated.Id)
+	_, queryErr := db.Exec("UPDATE `order` SET device_id = ?, product_id = ?, amount = ?, price_per_product = ?, method = ? WHERE id = ?", updated.DeviceId, updated.ProductId, updated.Amount, updated.PricePerProduct, updated.Method, updated.Id)
 	if queryErr != nil {
 		fmt.Println("UpdateOrder: %v", queryErr)
 		return nil, queryErr

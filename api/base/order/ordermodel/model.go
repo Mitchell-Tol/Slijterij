@@ -7,6 +7,7 @@ type OrderEntity struct {
 	Timestamp string `json:"timestamp"`
 	Amount int `json:"amount"`
 	PricePerProduct float32 `json:"price_per_product"`
+	Method int `json:"method"`
 }
 
 type Order struct {
@@ -15,6 +16,7 @@ type Order struct {
 	Timestamp string `json:"timestamp"`
 	Amount int `json:"amount"`
 	PricePerProduct float32 `json:"price_per_product"`
+	Method int `json:"method"`
 }
 
 type UpdatedOrder struct {
@@ -23,6 +25,7 @@ type UpdatedOrder struct {
 	ProductId string `json:"product_id"`
 	Amount int `json:"amount"`
 	PricePerProduct float32 `json:"price_per_product"`
+	Method int `json:"method"`
 }
 
 type OrderId struct {
