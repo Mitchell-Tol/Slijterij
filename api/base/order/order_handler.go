@@ -3,6 +3,7 @@ package order
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"slijterij/api/base/drinks/drinksmodel"
 	"slijterij/api/base/order/ordermodel"
@@ -135,9 +136,13 @@ func (h *OrderHandler) IncreaseDrink(id string, amount int) (error) {
 	for i := 0; i < len(allDrinks); i++ {
 		var newPrice float32
 		if allDrinks[i].Id == drink.Id {
-			newPrice = drink.CurrentPrice + drink.StartPrice * drink.RiseMultiplier * float32(amount)
+			modifier := drink.StartPrice * drink.RiseMultiplier + 1
+			byAmount := math.Pow(float64(modifier), float64(amount))
+			newPrice = drink.CurrentPrice * float32(byAmount)
 		} else {
-			newPrice = allDrinks[i].CurrentPrice - allDrinks[i].StartPrice * allDrinks[i].DropMultiplier * float32(amount)
+			modifier := 1 - allDrinks[i].StartPrice * allDrinks[i].RiseMultiplier
+			byAmount := math.Pow(float64(modifier), float64(amount))
+			newPrice = allDrinks[i].CurrentPrice * float32(byAmount)
 		}
 		h.store.UpdateDrink(
 			&drinksmodel.DrinkEntity{
