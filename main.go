@@ -36,7 +36,7 @@ func main() {
 	mux.Handle("/order", orderHandler)
 
 	corsSettings := cors.New(cors.Options{
-		AllowedOrigins: []string{"*:3000"},
+		AllowedOrigins: []string{"*:3000", "https://drankmarket.vercel.app"},
 		AllowCredentials: true,
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
 	})
