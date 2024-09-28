@@ -15,7 +15,6 @@ services:
 
   db:
     image: mysql:8.0
-    restart: always
     ports:
       - "3307:3306"
     volumes:
