@@ -2,6 +2,7 @@ package bar
 
 import (
     "fmt"
+    "html"
     "net/http"
     "encoding/json"
     "slijterij/db"
@@ -45,11 +46,12 @@ func (h *BarHandler) GetBarById(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    result, retrieveErr := h.store.BarById(params[0])
+    barId := html.EscapeString(params[0])
+    result, retrieveErr := h.store.BarById(barId)
     if retrieveErr != nil {
-        fmt.Printf("GetBarById %s: %v\n", params[0], retrieveErr)
+        fmt.Printf("GetBarById %s: %v\n", barId, retrieveErr)
         w.WriteHeader(http.StatusNotFound)
-        w.Write(generic.JSONError(fmt.Sprintf("Bar with id %s not found", params[0])))
+        w.Write(generic.JSONError(fmt.Sprintf("Bar with id %s not found", barId)))
         return
     }
 
