@@ -12,6 +12,7 @@ services:
       - .:/app/
     depends_on:
       - db
+    restart: always
 
   db:
     image: mysql:8.0
@@ -27,6 +28,7 @@ services:
       MYSQL_DATABASE: "${DBNAME}"
     networks:
       - default
+    restart: always
 
 networks:
   default:
