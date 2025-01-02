@@ -1,16 +1,16 @@
 package crash
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"slijterij/api/base/drinks/crash/crashmodel"
-	"slijterij/api/generic"
-	"slijterij/db"
+    "encoding/json"
+    "fmt"
+    "net/http"
+    "slijterij/api/base/drinks/crash/crashmodel"
+    "slijterij/api/generic"
+    "slijterij/db"
 )
 
 type CrashHandler struct {
-	store *db.DataStore
+    store *db.DataStore
 }
 
 func (h *CrashHandler) CrashProducts(w http.ResponseWriter, r *http.Request) {
