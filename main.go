@@ -8,8 +8,10 @@ import (
 	"slijterij/api/base/category"
 	"slijterij/api/base/device"
 	"slijterij/api/base/drinks"
+	"slijterij/api/base/drinks/crash"
 	"slijterij/api/base/order"
 	"slijterij/db"
+
 	"github.com/rs/cors"
 )
 
@@ -20,6 +22,7 @@ func main() {
 
 	baseHandler := base.NewHandler()
 	drinksHandler := drinks.NewHandler(store)
+	crashHandler := crash.NewHandler(store)
 	categoryHandler := category.NewHandler(store)
 	deviceHandler := device.NewHandler(store)
 	orderHandler := order.NewHandler(store)
@@ -29,6 +32,7 @@ func main() {
     mux := http.NewServeMux()
     mux.Handle("/", baseHandler)
     mux.Handle("/drinks", drinksHandler)
+	mux.Handle("/drinks/crash", crashHandler)
     mux.Handle("/bar", barHandler)
     mux.Handle("/bar/login", loginHandler)
     mux.Handle("/device", deviceHandler)
