@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine
+FROM golang:1.24.0-alpine
 
 WORKDIR /slijterij
 
